@@ -1,0 +1,30 @@
+name: ShellCheck
+
+on:
+  push:
+    branches:
+      - main
+      - improve-monitoring
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  shellcheck:
+    name: Check Bash script
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Install ShellCheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes shellcheck
+
+      - name: Run ShellCheck
+        run: shellcheck health_check.sh

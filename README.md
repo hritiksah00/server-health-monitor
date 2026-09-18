@@ -1,5 +1,7 @@
 # Linux Server Health Monitor
 
+[![ShellCheck](https://github.com/hritiksah00/server-health-monitor/actions/workflows/shellcheck.yml/badge.svg?branch=main)](https://github.com/hritiksah00/server-health-monitor/actions/workflows/shellcheck.yml)
+
 A lightweight Bash-based monitoring tool that checks essential Linux system resources and services, records timestamped results, and returns automation-friendly exit codes.
 
 ## Features

@@ -7,6 +7,7 @@ CURRENT_DATE=$(date '+%Y-%m-%d %H:%M:%S')
 DISK_THRESHOLD=80
 CPU_THRESHOLD=80
 MEMORY_THRESHOLD=80
+SERVICES=("docker" "ssh" "apache2")
 
 echo "--- Server Health Check: $CURRENT_DATE ---" >> "$LOG_FILE"
 
@@ -37,11 +38,15 @@ else
     echo "Memory usage is healthy at ${MEMORY_USAGE}%" >> "$LOG_FILE"
 fi
 
-# 4. Check Whether Apache Is Running
-if systemctl is-active --quiet apache2; then
-    echo "Service Status: Apache Web Server is RUNNING." >> "$LOG_FILE"
-else
-    echo "CRITICAL ALERT: Apache Web Server is DOWN!" >> "$LOG_FILE"
-fi
+# 4. Check Monitored Services
+for service in "${SERVICES[@]}"; do
+    if ! systemctl cat "$service" >/dev/null 2>&1; then
+        echo "Service Status: $service is NOT INSTALLED." >> "$LOG_FILE"
+    elif systemctl is-active --quiet "$service"; then
+        echo "Service Status: $service is RUNNING." >> "$LOG_FILE"
+    else
+        echo "CRITICAL ALERT: $service is DOWN!" >> "$LOG_FILE"
+    fi
+done
 
 echo "------------------------------------------" >> "$LOG_FILE"

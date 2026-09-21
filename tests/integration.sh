@@ -99,7 +99,7 @@ systemctl daemon-reload
 baseline="$(stat -c %Y /var/lib/linux-admin/status.json)"
 systemctl restart linux-admin-monitor.timer
 observed=false
-for attempt in $(seq 1 15); do
+for ((attempt = 0; attempt < 15; attempt++)); do
     sleep 1
     if [[ "$(stat -c %Y /var/lib/linux-admin/status.json)" -gt "$baseline" ]]; then observed=true; break; fi
 done
@@ -134,7 +134,7 @@ systemctl stop linux-admin-fixture.service
 if systemctl start linux-admin-monitor.service; then echo 'Expected warning failure was not detected' >&2; exit 1; fi
 [[ "$(systemctl show -p ExecMainStatus --value linux-admin-monitor.service)" == 1 ]]
 alert_seen=false
-for attempt in $(seq 1 15); do
+for ((attempt = 0; attempt < 15; attempt++)); do
     if grep -q systemd_job_failed /var/log/linux-admin/operations.jsonl; then alert_seen=true; break; fi
     sleep 1
 done
@@ -160,7 +160,7 @@ grep -qx 'authenticationmethods publickey' "$temp/sshd-effective"
     -o ListenAddress=127.0.0.1 -o UsePAM=yes -p 22292 > "$temp/sshd-output" 2>&1 &
 ssh_pid=$!
 connected=false
-for attempt in $(seq 1 10); do
+for ((attempt = 0; attempt < 10; attempt++)); do
     if ssh -p 22292 -i "$temp/client_key" -o BatchMode=yes -o IdentitiesOnly=yes \
         -o StrictHostKeyChecking=accept-new -o "UserKnownHostsFile=$temp/known_hosts" \
         linux-admin-ci@127.0.0.1 id > "$temp/ssh-session" 2>/dev/null; then

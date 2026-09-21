@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily Linux lab backup with missed-run catch-up
+
+[Timer]
+OnCalendar=*-*-* 02:00:00
+Persistent=true
+RandomizedDelaySec=5min
+Unit=linux-admin-backup.service
+
+[Install]
+WantedBy=timers.target

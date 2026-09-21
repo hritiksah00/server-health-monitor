@@ -1,30 +1,39 @@
-name: ShellCheck
+name: Linux Admin CI
 
 on:
   push:
-    branches:
-      - main
-      - improve-monitoring
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  shellcheck:
-    name: Check Bash script
-    runs-on: ubuntu-latest
-
+  linux-admin-lab:
+    name: Unit tests and Ubuntu host integration
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
     steps:
       - name: Check out repository
-        uses: actions/checkout@v6
-
-      - name: Install ShellCheck
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Install validation tools
         run: |
-          sudo apt-get update
-          sudo apt-get install --yes shellcheck
-
-      - name: Run ShellCheck
-        run: shellcheck health_check.sh
+          sudo apt-get update -qq
+          sudo apt-get install --yes shellcheck logrotate openssh-server ufw
+      - name: Check Bash and Python
+        run: |
+          shellcheck health_check.sh scripts/*.sh tests/integration.sh
+          python3 -m compileall -q linux_admin.py tests
+      - name: Test measurements, backup recovery, and failure paths
+        run: python3 -m unittest discover -s tests -v
+      - name: Exercise installed services on the ephemeral runner
+        run: sudo bash tests/integration.sh --disposable-vm
+      - name: Show job evidence
+        if: always()
+        run: |
+          sudo journalctl -u linux-admin-monitor.service -u linux-admin-backup.service -u linux-admin-alert@linux-admin-monitor.service --no-pager -n 60 || true
+          sudo systemctl list-timers 'linux-admin-*' --all --no-pager || true

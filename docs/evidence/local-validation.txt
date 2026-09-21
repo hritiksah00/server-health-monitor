@@ -1,0 +1,61 @@
+ACTUAL LOCAL EXECUTION — core program and unit tests
+Captured UTC: 2026-09-21T10:27:29.631694+00:00
+Environment: Linux coding container; Python 3.12.14
+This transcript does not claim systemd/SSH/firewall deployment on a personal VM.
+
+$ /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python -m unittest discover -s tests -v
+test_apply_requires_explicit_console_confirmation (test_linux_admin.FirewallTests.test_apply_requires_explicit_console_confirmation) ... ok
+test_current_ssh_client_must_be_in_allowed_network (test_linux_admin.FirewallTests.test_current_ssh_client_must_be_in_allowed_network) ... ok
+test_preview_never_enables_firewall (test_linux_admin.FirewallTests.test_preview_never_enables_firewall) ... ok
+test_public_network_and_invalid_port_are_rejected (test_linux_admin.FirewallTests.test_public_network_and_invalid_port_are_rejected) ... ok
+test_backup_destination_cannot_be_inside_source (test_linux_admin.LabTests.test_backup_destination_cannot_be_inside_source) ... ok
+test_backup_round_trip_preserves_file_contents (test_linux_admin.LabTests.test_backup_round_trip_preserves_file_contents) ... ok
+test_corrupt_old_backup_does_not_displace_a_valid_backup (test_linux_admin.LabTests.test_corrupt_old_backup_does_not_displace_a_valid_backup) ... ok
+test_corruption_is_detected_before_restore (test_linux_admin.LabTests.test_corruption_is_detected_before_restore) ... ok
+test_cpu_uses_counter_delta_and_excludes_idle (test_linux_admin.LabTests.test_cpu_uses_counter_delta_and_excludes_idle) ... ok
+test_disk_full_does_not_remove_old_backup (test_linux_admin.LabTests.test_disk_full_does_not_remove_old_backup) ... ok
+test_failed_backup_preserves_existing_archive (test_linux_admin.LabTests.test_failed_backup_preserves_existing_archive) ... ok
+test_healthy_report_and_json_log (test_linux_admin.LabTests.test_healthy_report_and_json_log) ... ok
+test_invalid_config_exits_two (test_linux_admin.LabTests.test_invalid_config_exits_two) ... ok
+test_invalid_thresholds_are_rejected (test_linux_admin.LabTests.test_invalid_thresholds_are_rejected) ... ok
+test_log_rotation_reopens_new_file (test_linux_admin.LabTests.test_log_rotation_reopens_new_file) ... ok
+test_logging_failure_returns_nonzero (test_linux_admin.LabTests.test_logging_failure_returns_nonzero) ... ok
+test_memory_counts_available_including_reclaimable_cache (test_linux_admin.LabTests.test_memory_counts_available_including_reclaimable_cache) ... ok
+test_missing_and_stale_backups_raise_warnings (test_linux_admin.LabTests.test_missing_and_stale_backups_raise_warnings) ... ok
+test_missing_or_inactive_service_is_warning (test_linux_admin.LabTests.test_missing_or_inactive_service_is_warning) ... ok
+test_nonadvancing_cpu_counters_are_an_error (test_linux_admin.LabTests.test_nonadvancing_cpu_counters_are_an_error) ... ok
+test_overlap_returns_distinct_exit_code (test_linux_admin.LabTests.test_overlap_returns_distinct_exit_code) ... ok
+test_restore_refuses_existing_destination (test_linux_admin.LabTests.test_restore_refuses_existing_destination) ... ok
+test_restore_rejects_traversal_absolute_and_link_members (test_linux_admin.LabTests.test_restore_rejects_traversal_absolute_and_link_members) ... ok
+test_retention_keeps_newest_valid_backups_only (test_linux_admin.LabTests.test_retention_keeps_newest_valid_backups_only) ... ok
+test_service_query_failure_is_error (test_linux_admin.LabTests.test_service_query_failure_is_error) ... ok
+test_service_query_timeout_is_error (test_linux_admin.LabTests.test_service_query_timeout_is_error) ... ok
+test_source_size_limit_prevents_partial_backup (test_linux_admin.LabTests.test_source_size_limit_prevents_partial_backup) ... ok
+test_threshold_boundary_is_warning (test_linux_admin.LabTests.test_threshold_boundary_is_warning) ... ok
+test_unavailable_measurement_cannot_be_healthy (test_linux_admin.LabTests.test_unavailable_measurement_cannot_be_healthy) ... ok
+test_unknown_config_key_is_not_silently_ignored (test_linux_admin.LabTests.test_unknown_config_key_is_not_silently_ignored) ... ok
+
+----------------------------------------------------------------------
+Ran 30 tests in 0.314s
+
+OK
+Exit code: 0
+
+$ /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python linux_admin.py --config config/local.json backup
+{"archive": "backup-20260921T102730078417Z-868587d7.tar.gz", "level": "ok", "message": "backup_created", "sha256": "c5b71b12112863af690ccffa0a462936509dff99ac225bc2f0b70c81455890b5", "source_bytes": 197, "time": "2026-09-21T10:27:30+00:00"}
+/workspace/scratch/19db1c8fb933/linux-admin-lab/.local/backups/backup-20260921T102730078417Z-868587d7.tar.gz
+Exit code: 0
+
+$ /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python linux_admin.py --config config/local.json monitor
+{"checks": [{"name": "cpu", "percent": 0.0, "status": "ok", "threshold": 85}, {"name": "memory", "percent": 3.83, "status": "ok", "threshold": 85}, {"name": "disk:/", "percent": 0.22, "status": "ok", "threshold": 85}, {"archive": "backup-20260921T102730078417Z-868587d7.tar.gz", "hours": 0.0, "limit_hours": 26, "name": "backup_age", "status": "ok"}], "exit_code": 0, "level": "ok", "message": "monitor_completed", "time": "2026-09-21T10:27:31+00:00"}
+Exit code: 0
+
+$ /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python linux_admin.py --config config/local.json verify-backup .local/backups/backup-20260921T102730078417Z-868587d7.tar.gz
+{"archive": "backup-20260921T102730078417Z-868587d7.tar.gz", "entries": 2, "level": "ok", "message": "backup_verified", "time": "2026-09-21T10:27:31+00:00"}
+Exit code: 0
+
+$ /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python linux_admin.py --config config/local.json restore .local/backups/backup-20260921T102730078417Z-868587d7.tar.gz .local/state/restore-evidence-20260921112731
+{"archive": "backup-20260921T102730078417Z-868587d7.tar.gz", "destination": "/workspace/scratch/19db1c8fb933/linux-admin-lab/.local/state/restore-evidence-20260921112731", "level": "ok", "message": "backup_restored", "time": "2026-09-21T10:27:31+00:00"}
+Exit code: 0
+
+Restored sample data is byte-identical: True

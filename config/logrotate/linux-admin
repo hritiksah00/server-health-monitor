@@ -1,0 +1,11 @@
+/var/log/linux-admin/*.jsonl {
+    daily
+    rotate 14
+    maxsize 5M
+    compress
+    delaycompress
+    missingok
+    notifempty
+    su linux-admin linux-admin
+    create 0640 linux-admin linux-admin
+}

@@ -1,1 +1,9 @@
 *.log
+*.jsonl
+*.tar.gz
+*.sha256
+.local/
+__pycache__/
+*.pyc
+.coverage
+.venv/

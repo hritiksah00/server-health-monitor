@@ -1,0 +1,20 @@
+[Unit]
+Description=Record failed Linux administration job %i
+
+[Service]
+Type=oneshot
+User=linux-admin
+Group=linux-admin
+UMask=0027
+ExecStart=/usr/bin/logger --tag linux-admin --priority daemon.err "Job %i failed; inspect its journal"
+ExecStart=/usr/bin/python3 /opt/linux-admin/linux_admin.py alert %i
+TimeoutStartSec=10
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+RestrictAddressFamilies=AF_UNIX
+ReadWritePaths=/var/log/linux-admin /var/lib/linux-admin
+StandardOutput=journal
+StandardError=journal

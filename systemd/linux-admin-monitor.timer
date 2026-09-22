@@ -1,0 +1,11 @@
+[Unit]
+Description=Run Linux administration checks every minute
+
+[Timer]
+OnBootSec=2min
+OnUnitInactiveSec=1min
+AccuracySec=5s
+Unit=linux-admin-monitor.service
+
+[Install]
+WantedBy=timers.target

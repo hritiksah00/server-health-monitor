@@ -1,0 +1,3 @@
+Linux administration lab sample data.
+This file represents a small application's documents/configuration, not a database.
+Backups are verified and restored to a separate directory before recovery.

@@ -1,0 +1,15 @@
+{
+  "cpu_threshold": 85,
+  "memory_threshold": 85,
+  "disk_threshold": 85,
+  "sample_seconds": 1,
+  "disk_paths": ["/", "/var/backups"],
+  "services": ["systemd-journald.service"],
+  "log_dir": "/var/log/linux-admin",
+  "state_dir": "/var/lib/linux-admin",
+  "backup_dir": "/var/backups/linux-admin",
+  "backup_source": "/srv/linux-admin/data",
+  "keep_backups": 7,
+  "max_backup_bytes": 104857600,
+  "backup_max_age_hours": 26
+}

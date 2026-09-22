@@ -1,0 +1,15 @@
+{
+  "cpu_threshold": 85,
+  "memory_threshold": 85,
+  "disk_threshold": 85,
+  "sample_seconds": 1,
+  "disk_paths": ["/"],
+  "services": [],
+  "log_dir": "../.local/log",
+  "state_dir": "../.local/state",
+  "backup_dir": "../.local/backups",
+  "backup_source": "../examples/data",
+  "keep_backups": 7,
+  "max_backup_bytes": 104857600,
+  "backup_max_age_hours": 26
+}

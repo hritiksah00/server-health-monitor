@@ -21,6 +21,7 @@ cleanup() {
     if [[ -f "$temp/config.json" ]]; then cp "$temp/config.json" /etc/linux-admin/config.json; fi
     systemctl stop linux-admin-monitor.timer 2>/dev/null || true
     rm -f /run/systemd/system/linux-admin-monitor.timer.d/integration.conf
+    rm -f /run/systemd/system/linux-admin-monitor.service.d/integration.conf
     if "$fixture_created"; then
         systemctl stop linux-admin-fixture.service 2>/dev/null || true
         rm -f /etc/systemd/system/linux-admin-fixture.service
@@ -40,6 +41,16 @@ before="$(sha256sum /etc/linux-admin/config.json)"
 bash scripts/install.sh --apply --operator linux-admin-ci
 [[ "$(sha256sum /etc/linux-admin/config.json)" == "$before" ]]
 printf 'PASS: installer is repeatable and preserves configuration\n'
+
+# The harness starts this unit repeatedly within seconds. Disable rate limiting
+# only in a temporary runtime override; the installed service retains its defaults.
+install -d /run/systemd/system/linux-admin-monitor.service.d
+cat > /run/systemd/system/linux-admin-monitor.service.d/integration.conf <<'UNIT'
+[Unit]
+StartLimitIntervalSec=0
+UNIT
+systemctl daemon-reload
+systemctl reset-failed linux-admin-monitor.service
 
 id linux-admin
 id linux-admin-ci
